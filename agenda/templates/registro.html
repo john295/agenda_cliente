@@ -1,0 +1,10 @@
+{% extends "page/base.html" %}
+
+{% block body %}
+    <form action="/registrar/" method="post">
+        {% csrf_token %}
+        {{ create_form.as_p }}
+        <button onclick="submit">crear</button>
+    </form>
+
+{% endblock %}
