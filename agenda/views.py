@@ -4,8 +4,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
 # Create your views here.
+from rest_framework.views import APIView
+
 from agenda.forms import CitasForms
-from agenda.models import Agenda
+from agenda.models import Agenda, Citas
 
 
 class IndexView(View):
@@ -31,16 +33,15 @@ class RegisterView(View):
             return render(request, "registro.html", context={"create_form": formulario})
 
 
-class AgendaCreationView(View):
+class AgendaView(View):
 
     def get(self, request, *args, **kwargs):
-        return render(request, "agenda.html", context={"create_form": UserCreationForm()})
-
-    def post(self, request, *args, **kwargs):
-        pass
+        citas = request.user.agenda.citas_set.all()
+        return render(request, "agenda.html", context={"citas": citas})
 
 
-class AgendaCitasCreationView(View):
+
+class AgendaCitasCreationView(APIView):
 
     def get(self, request, *args, **kwargs):
         """
@@ -60,15 +61,15 @@ class AgendaCitasCreationView(View):
         :param kwargs:
         :return:
         """
-        data = dict(request.POST.iterlists())
+        data = request.POST.copy()
         agenda, was_created = Agenda.objects.get_or_create(
                 defaults={
                     'nombre': request.user.username,
                 },
                 usuario=request.user
         )
-        data['agenda'] = [str(agenda)]
-        formulario = CitasForms(request.POST)
+        data['agenda'] = str(agenda.id)
+        formulario = CitasForms(data)
         if formulario.is_valid():
             formulario.save()
             return render(request, "success.html", context={"mensaje": "que bueno funciono"})

@@ -29,5 +29,6 @@ urlpatterns = [
     url(r'^login/$', 'django.contrib.auth.views.login', name="my_login"),
     url(r'^logout/$', 'django.contrib.auth.views.logout', name="my_logout", kwargs={'next_page': '/'}),
     url(r'^registrar/?', agendaViews.RegisterView.as_view(), name="register"),
-    url(r'^citas/crear/?', login_required(agendaViews.AgendaCitasCreationView.as_view()), name="citas_creation")
+    url(r'^citas/crear/?', login_required(agendaViews.AgendaCitasCreationView.as_view()), name="citas_creation"),
+    url(r'^agenda/?', login_required(agendaViews.AgendaView.as_view()), name="agenda")
 ]
