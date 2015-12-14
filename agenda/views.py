@@ -4,7 +4,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
 # Create your views here.
-
+from agenda.forms import CitasForms
+from agenda.models import Agenda
 
 
 class IndexView(View):
@@ -27,9 +28,7 @@ class RegisterView(View):
             #mensaje =  "El usuario {usuario} ha sido creado exitosamente".format(usuario=formulario.username)
             return render(request, "success.html", context={"mensaje": "que bueno funciono"})
         else:
-            return render(request, "registro.html", context={"create_form": UserCreationForm})
-
-
+            return render(request, "registro.html", context={"create_form": formulario})
 
 
 class AgendaCreationView(View):
@@ -39,4 +38,40 @@ class AgendaCreationView(View):
 
     def post(self, request, *args, **kwargs):
         pass
+
+
+class AgendaCitasCreationView(View):
+
+    def get(self, request, *args, **kwargs):
+        """
+        :type request: django.core.handlers.wsgi.WSGIRequest or rest_framework.request.Request
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        return render(request, "citas_creacion.html", context={"create_form": CitasForms()})
+
+    def post(self, request, *args, **kwargs):
+        """
+        :type request: django.core.handlers.wsgi.WSGIRequest or rest_framework.request.Request
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        data = dict(request.POST.iterlists())
+        agenda, was_created = Agenda.objects.get_or_create(
+                defaults={
+                    'nombre': request.user.username,
+                },
+                usuario=request.user
+        )
+        data['agenda'] = [str(agenda)]
+        formulario = CitasForms(request.POST)
+        if formulario.is_valid():
+            formulario.save()
+            return render(request, "success.html", context={"mensaje": "que bueno funciono"})
+        else:
+            return render(request, "citas_creacion.html", context={"create_form": formulario})
 

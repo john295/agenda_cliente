@@ -16,11 +16,18 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from django.contrib.auth.decorators import login_required
+
 from agenda import views as agendaViews
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^/?$', agendaViews.IndexView.as_view()),
-    url(r'^registrar/?', agendaViews.RegisterView.as_view())
+    url(r'^/?$', agendaViews.IndexView.as_view(), name='index'),
+    url(r'^my_admin/jsi18n', 'django.views.i18n.javascript_catalog'),
+    url(r'^accounts/login/$', 'django.contrib.auth.views.login', name="my_login"),
+    url(r'^login/$', 'django.contrib.auth.views.login', name="my_login"),
+    url(r'^logout/$', 'django.contrib.auth.views.logout', name="my_logout", kwargs={'next_page': '/'}),
+    url(r'^registrar/?', agendaViews.RegisterView.as_view(), name="register"),
+    url(r'^citas/crear/?', login_required(agendaViews.AgendaCitasCreationView.as_view()), name="citas_creation")
 ]

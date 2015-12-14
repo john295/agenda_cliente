@@ -9,4 +9,13 @@ from django.contrib.auth.models import User
 class Agenda(models.Model):
     id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=30, null=True)
-    usuario = models.ForeignKey(User)
+    usuario = models.OneToOneField(User)
+
+
+class Citas(models.Model):
+    id = models.AutoField(primary_key=True)
+    agenda = models.ForeignKey(Agenda)
+    nombre = models.CharField(max_length=30)
+    descripcion = models.CharField(max_length=300, null=True, blank=True)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_limite = models.DateTimeField()

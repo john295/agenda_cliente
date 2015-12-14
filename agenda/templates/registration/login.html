@@ -1,17 +1,23 @@
 {% extends "page/base.html" %}
 
+
 {% block body %}
     {% if create_form.errors %}
         <p style="color: red;">
             Por favor corrige lo siguiente:
         </p>
     {% endif %}
-    <form action="/registrar/" method="post">
+    <form action="" method="post">
         {% csrf_token %}
         <table>
-            {{ create_form.as_table }}
+            {{ form.as_table }}
         </table>
-        <input type="submit" value="Enviar">
+        <input type="submit" value="Loggin">
     </form>
 
+{% endblock %}
+
+
+{% block foot %}
+    {{ form.media }}
 {% endblock %}
